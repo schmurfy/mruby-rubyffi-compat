@@ -312,7 +312,9 @@ class Array
 end
 
 
-
+class FFI::NotFoundError < RuntimeError
+ 
+end
 
 module FFI::Library
   def ffi_lib n=nil
@@ -360,7 +362,11 @@ module FFI::Library
     end  
   
   def attach_function name,at,rt
-    f=add_function ffi_lib,name,at,rt
+    raise(FFI::NotFoundError.new("Function '#{name}' not found in [#{ffi_libs.map do |dl| dl.libname end.join(", ")}]")) unless dyn_lib = ffi_libs.find do |dl|
+      !dl.get_symbol(name.to_s).is_null?
+    end
+    
+    f=add_function dyn_lib.libname,name,at,rt
 
     self.class_eval do
       class << self;self;end.define_method name do |*o,&b|  
