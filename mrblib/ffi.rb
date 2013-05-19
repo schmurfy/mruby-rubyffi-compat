@@ -25,7 +25,7 @@ module FFI
     :void     => CFunc::Void,
     :double   => CFunc::Double,
     :size_t   => CFunc::UInt32,
-    :ulong    => CFunc::UInt64,
+    :ulong    => (FFI.longsize == 8) ? CFunc::UInt64 : CFunc::UInt32,
     :long     => (FFI.longsize == 8) ? CFunc::SInt64 : CFunc::SInt32,
     :uint64   => CFunc::UInt64,
     :uint8    => CFunc::UInt8,
