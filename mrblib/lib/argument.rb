@@ -1,20 +1,4 @@
-module FFIType2CFuncType
-  # Returns a Class of CFunc namespace types
-  def ffi_type
-    case type
-    when :object
-      CFunc::Pointer
-    when :struct
-      CFunc::Pointer
-    when :union
-      CFunc::Pointer
-    when :array
-      CFunc::CArray(array.ffi_type)
-    else
-      FFI::TYPES[type] || CFunc::Pointer
-    end
-  end
-end
+
 
 # Represents Argument/Return array member
 # specifies properties of the array

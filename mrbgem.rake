@@ -2,8 +2,15 @@ lib_root = File.expand_path('../mrblib', __FILE__)
 
 $mrbfiles = []
 $rbfiles = [
-  'argument',
-  'function',
+  'lib/monkey/cfunc',
+  'lib/monkey/symbol',
+  'lib/types',
+  'lib/argument',
+  'lib/closure',
+  'lib/function',
+  'lib/library',
+  'lib/pointer',
+  'lib/struct',
   'ffi'
 ]
 
