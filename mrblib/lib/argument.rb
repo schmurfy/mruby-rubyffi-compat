@@ -58,16 +58,7 @@ module Cvalue2RubyValue
   def is_numeric?
     FFI::C_NUMERICS.index(FFI::TYPES[type])
   end
-  
-  # Converts Symbol to Integer
-  # if v is a member of the (Argument || Return)#enum
-  def get_enum v
-    r = enum.enum?
-    if r
-      r = r.map do |v| v.name.to_sym end
-    end
-    r.index(v)
-  end
+    
 end 
 
 # Represents Argument information
@@ -98,7 +89,7 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
     else
       tt = FFI::TYPES[type] ? type : :pointer
       
-       q=FFI::MemoryPointer.new(tt,mul)
+      q=FFI::MemoryPointer.new(tt,mul)
       return q#FFI::MemoryPointer.new(tt,mul)
     end
   end
@@ -107,59 +98,80 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
   
   # Sets the appropiate value for an Argument for Function#invoke
   def for_invoke
-    if type == :string and direction == :in
-      return value
-    end
-    
-    if type == :pointer
-      if value.is_a?(CFunc::Pointer)
-        return value
-      end
-    elsif type == :object
-        return value
-    end
-    
-    ptr = make_pointer
-
-    if type == :callback
-      ptr.set_closure value if ptr.respond_to?(:set_closure)
-      return ptr
-    end
-    
-    tt = type
-    
-    tt = (tt == :enum ? :int : tt)
-    
-    if value;
-      q = value
-      if type == :enum
-        if value.is_a?(Symbol)
-          q = get_enum(value)
-        end
+    if direction == :in
+      
+      cfunc_type = FFI::TYPES[type]
+      enum_type = FFI::Library.enums[type]
+      
+      if enum_type
+        CFunc::Int.new(enum_type[value])
+        
+      elsif cfunc_type
+        cfunc_type.new(value)
+        
+      else
+        raise "Unsupported type: #{type}"
       end
       
-      if type == :pointer
-        unless q.is_a?(CFunc::Pointer)
-          if q == 0
-            q = CFunc::Int.new(0)
-          end
-        end
-      end
-
-      if array
-        tt = array.type
-        meth = :"write_array_of_#{tt}"
-      else
-        meth = :"write_#{tt}"
-      end
-
-      ptr.send meth,q unless direction == :out
-
-    elsif allow_null or omit?
-      ptr.write_int 0 unless direction == :out
+    else
+      raise "Unsupported direction: #{direction}"
     end
+    
+    
+    
+    # if type == :string and direction == :in
+    #   return value
+    # end
+    
+    # if type == :pointer
+    #   if value.is_a?(CFunc::Pointer)
+    #     return value
+    #   end
+    # elsif type == :object
+    #     return value
+    # end
+    
+    # ptr = make_pointer
+
+    # if type == :callback
+    #   ptr.set_closure value if ptr.respond_to?(:set_closure)
+    #   return ptr
+    # end
+    
+    # tt = type
+    
+    # tt = (tt == :enum ? :int : tt)
+    
+    # if value
+    #   q = value
+    #   if type == :enum
+    #     if value.is_a?(Symbol)
+    #       q = get_enum(value)
+    #     end
+    #   end
+      
+    #   if type == :pointer
+    #     unless q.is_a?(CFunc::Pointer)
+    #       if q == 0
+    #         q = CFunc::Int.new(0)
+    #       end
+    #     end
+    #   end
+
+    #   if array
+    #     tt = array.type
+    #     meth = :"write_array_of_#{tt}"
+    #   else
+    #     meth = :"write_#{tt}"
+    #   end
+
+    #   ptr.send meth,q unless direction == :out
+
+    # elsif allow_null or omit?
+    #   ptr.write_int 0 unless direction == :out
+    # end
  
-    return ptr
+    # return ptr
   end
  
   # Returns true if the argument may be omitted from invoke arguments

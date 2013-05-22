@@ -1,56 +1,64 @@
 module FFI::Library
-  def ffi_lib n=nil
-    @ffi_lib = n if n
-    return @ffi_lib
+  def ffi_lib(libname)
+    @ffi_lib = libname
   end
   
   @@callbacks = {}
-  
-  def callback n,at,rt
-    return @@callbacks[n] = [at.map do |t| FFI::TYPES[t] end,FFI::TYPES[rt]]
+  def callback(name, arguments_type, result_type)
+    @@callbacks[name] = [ arguments_type.map{|t| FFI::TYPES[t]}, FFI::TYPES[result_type] ]
   end
   
   def self.callbacks
-    return @@callbacks
+    @@callbacks
   end
   
 
   
-  def typedef *o
-    return FFI::TYPES[o[1]] = q=FFI.find_type(o[0])
+  def typedef(type_name, alias_name)
+    FFI::TYPES[alias_name] = FFI.find_type(type_name)
   end  
   
   @@enums = {}
-  def enum t,a
-    if a.find() do |q| q.is_a?(Integer) end
-      b = []
-
-      for i in 0..((a.length/2)-1)
-        val= a[i*2] 
-        idx = a[(i*2)+1]
-        b[idx] = val
+  def enum(enum_name, arr)
+    idx = 0
+    values = {}
+    
+    pos = 0
+    loop do
+      name = arr[pos]
+      value = arr[pos+1]
+      
+      if value.is_a?(Integer)
+        idx = value
+        pos += 2
+      else
+        pos += 1
       end
-
-      a=b
+      
+      values[name] = idx
+      idx += 1
+      
+      break if pos >= arr.size
     end
-    @@enums[t] = a
-    typedef :int,t
-    return self
+    
+    @@enums[enum_name] = values
+    typedef(:int, enum_name)
+    
+    self
   end
 
   def self.enums
-    r=@@enums
-    return r
+    @@enums
   end  
   
-  def attach_function name,at,rt
-    f=add_function ffi_lib,name,at,rt
+  def attach_function(function_name, arguments_type, result_type)
+    f= add_function(@ffi_lib, function_name, arguments_type, result_type)
 
-    self.class_eval do
-      class << self;self;end.define_method name do |*o,&b|  
-        next f.invoke(*o,&b)
-      end
+    singleton_class.define_method(function_name) do |*args, &b|  
+      f.invoke(*args, &b)
     end
-    return self
+    
+    self
   end
+  
 end

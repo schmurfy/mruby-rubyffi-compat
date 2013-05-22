@@ -276,7 +276,7 @@ end
 
 
 def add_function where,name,at,rt,ret=[-1]
-i=0
+  i=0
   args = at.map do |a|
   
     arg=Argument.new

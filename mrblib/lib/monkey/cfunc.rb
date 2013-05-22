@@ -13,29 +13,32 @@ module CFunc
       @dlh = CFunc::call(CFunc::Pointer, "dlopen", @libname, CFunc::Int.new(1))
     end
 
-    def call rt,name,*args
+    def call(result_type, func_name, *args)
       # @dlh ||= CFunc[:dlopen].call(@libname,CFunc::Int.new(1))
-      if !(f=@funcs[name])
-        fun_ptr = CFunc::call(CFunc::Pointer,:dlsym,@dlh,name)
+      
+      f = @funcs[func_name]
+      unless f
+        fun_ptr = CFunc::call(CFunc::Pointer, :dlsym, @dlh, func_name)
         f = CFunc::FunctionPointer.new(fun_ptr)
-        f.result_type = rt
-        @funcs[name] = f
+        f.result_type = result_type
+        @funcs[func_name] = f
       end
       
-      f.arguments_type = args.map do |a| a.class end      
+      # f.arguments_type = args.map do |a| a.class end
+      f.arguments_type = args.map{|a| a.class }
       return f.call(*args)
     end
     
-    def self.for where
-      if n=@@instances[where]
+    def self.for(libname)
+      if n = @@instances[libname]
         n
       else
-        return new(where)
+        new(libname)
       end
     end
   end
   
-  def self.libcall2 rt,where,n,*o
-    return CFunc::Library.for(where).call rt,n,*o
+  def self.libcall2(result_type, libname, func_name, *args)
+    CFunc::Library.for(libname).call(result_type, func_name, *args)
   end
 end
