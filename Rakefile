@@ -9,9 +9,15 @@ task :mrbpack do
   load(File.expand_path('../mrbgem.rake', __FILE__))
   target_files = $mrbfiles
   
-  test_file_path = File.expand_path('../mruby_test.rb', __FILE__)
-  if File.exist?(test_file_path)
-    target_files << test_file_path
+  target_files.unshift File.expand_path('../specs/init.rb', __FILE__)
+  
+  
+  %w(
+    tool.rb
+    basic_spec.rb
+    enum_spec.rb
+  ).each do |path|
+    target_files << File.expand_path("../specs/#{path}", __FILE__)
   end
   
   FileUtils.mkdir_p('tmp')
@@ -30,6 +36,10 @@ end
 
 task :mrbtest => :mrbpack do
   # replace ourself with mruby process
-  Process.exec('mruby tmp/blob.rb')
+  system('mruby tmp/blob.rb')
+end
+
+file 'specs/libtest/libtest.dylib' => ["specs/libtest/libtest.c"] do
+  sh "gcc -dynamiclib -o specs/libtest/libtest.dylib specs/libtest/libtest.c"
 end
 
