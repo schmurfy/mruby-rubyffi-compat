@@ -1,1 +1,3 @@
 tmp/
+specs/libtest/libtest.dylib
+specs/libtest/libtest.so
