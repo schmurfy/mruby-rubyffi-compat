@@ -22,7 +22,7 @@ task :mrbpack do
   
   FileUtils.mkdir_p('tmp')
   cd 'tmp' do
-    File.open('blob.rb', 'w') do |f|
+    File.open('blob', 'w') do |f|
       target_files.each do |path|
         f.puts "# #{path} ==============="
         f.write( File.read(path) )
@@ -36,7 +36,7 @@ end
 
 task :mrbtest => :mrbpack do
   # replace ourself with mruby process
-  system('mruby tmp/blob.rb')
+  system('mruby tmp/blob')
 end
 
 file 'specs/libtest/libtest.dylib' => ["specs/libtest/libtest.c"] do
