@@ -12,7 +12,10 @@ module FFITests
   module TestLib
     extend FFI::Library
     
-    ffi_lib '/Users/schmurfy/Dev/personal/mrbgems/mruby-rubyffi-compat/specs/libtest/libtest.dylib'
+    ffi_lib [
+      '/home/ubuntu/mruby-rubyffi-compat/specs/libtest/libtest.so',
+      '/Users/schmurfy/Dev/personal/mrbgems/mruby-rubyffi-compat/specs/libtest/libtest.dylib'
+    ]
     
     attach_function :return_uint, [:uint32], :uint32
     attach_function :return_double, [:double], :double

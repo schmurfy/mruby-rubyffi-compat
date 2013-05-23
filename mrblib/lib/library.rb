@@ -1,6 +1,17 @@
 module FFI::Library
-  def ffi_lib(libname)
-    @ffi_lib = libname
+  def ffi_lib(libnames)
+    libnames = [libnames] unless libnames.is_a?(Array)
+    libnames.each do |libname|
+      @dlh = CFunc::call(CFunc::Pointer, "dlopen", libname.to_s, CFunc::Int.new(1))
+      unless @dlh.is_null?()
+        @ffi_lib = libname
+        break
+      end
+    end
+    
+    if (libnames[0] != :c) && !@ffi_lib
+      raise "library not found: #{libnames}"
+    end
   end
   
   @@callbacks = {}
