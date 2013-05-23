@@ -43,3 +43,10 @@ file 'specs/libtest/libtest.dylib' => ["specs/libtest/libtest.c"] do
   sh "gcc -dynamiclib -o specs/libtest/libtest.dylib specs/libtest/libtest.c"
 end
 
+file 'specs/libtest/libtest.o' => "specs/libtest/libtest.c" do
+  sh "gcc -c -fpic specs/libtest/libtest.c -o specs/libtest/libtest.o"
+end
+
+file 'specs/libtest/libtest.so' => ["specs/libtest/libtest.o"] do
+  sh "gcc -shared -o specs/libtest/libtest.so specs/libtest/libtest.o"
+end
