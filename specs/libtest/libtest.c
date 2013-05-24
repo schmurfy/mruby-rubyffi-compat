@@ -74,3 +74,35 @@ unsigned int get_char(unsigned int n)
 
 
 
+// callbacks_specs
+struct SomeObject {
+  struct SomeObject *next ;
+  char              *name ;
+  double             value ;
+};
+
+struct SomeObject* create_object(double d)
+{
+  struct SomeObject *obj = malloc(sizeof(struct SomeObject));
+  obj->next = NULL;
+  obj->name = malloc(3 + 1);
+  strcpy(obj->name, "abc");
+  obj->value = d;
+  return obj;
+}
+
+void free_object(struct SomeObject *obj)
+{
+  free(obj->name);
+  free(obj);
+}
+
+typedef int (*notifyWhenYouWant)(struct SomeObject *waggled, double val);
+void set_object_callback(struct SomeObject *waggler, notifyWhenYouWant callback)
+{
+  callback(waggler, waggler->value);
+}
+
+
+
+

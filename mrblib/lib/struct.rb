@@ -1,5 +1,7 @@
 module FFI
   class Struct < CFunc::Struct
+    alias_method :pointer, :addr
+    
     def self.members
       elements.map{|e| e[1] }
     end
@@ -28,6 +30,7 @@ module FFI
       define(*every(o,2))
     end
   end
+  
   class Union < Struct
   end
     

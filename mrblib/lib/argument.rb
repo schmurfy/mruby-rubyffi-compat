@@ -110,6 +110,9 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
         
       elsif (cfunc_type = FFI::TYPES[type])
         cfunc_type.new(value)
+      
+      elsif (callback_type = FFI::Library.callbacks[type])
+        FFI::Closure.new(callback_type[1], callback_type[0], &value)
         
       else
         raise "Unsupported type: #{type}"
