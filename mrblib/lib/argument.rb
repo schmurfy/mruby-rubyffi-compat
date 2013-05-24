@@ -100,7 +100,6 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
   def for_invoke
     if direction == :in
       
-      cfunc_type = FFI::TYPES[type]
       enum_type = FFI::Library.enums[type]
       
       if enum_type
@@ -109,7 +108,7 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
       elsif type == :string
         value
         
-      elsif cfunc_type
+      elsif (cfunc_type = FFI::TYPES[type])
         cfunc_type.new(value)
         
       else
