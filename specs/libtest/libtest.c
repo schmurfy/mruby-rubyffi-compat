@@ -1,6 +1,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 enum day {
@@ -52,3 +54,23 @@ void fill_struct(struct s1 *s)
 void test(){
   printf("Yeah !\n");
 }
+
+
+
+
+// string_specs
+static char buffer[200];
+void save_string(const char *str)
+{
+  strncpy(buffer, str, sizeof(buffer) - 1);
+}
+
+unsigned int get_char(unsigned int n)
+{
+  return buffer[n];
+}
+
+
+
+
+

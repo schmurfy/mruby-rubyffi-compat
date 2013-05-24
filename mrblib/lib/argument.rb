@@ -105,6 +105,9 @@ class Argument < Struct.new(:object,:type,:struct,:array,:direction,:allow_null,
       
       if enum_type
         CFunc::Int.new(enum_type[value])
+      
+      elsif type == :string
+        value
         
       elsif cfunc_type
         cfunc_type.new(value)

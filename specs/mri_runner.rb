@@ -18,3 +18,4 @@ end
 require File.expand_path('../tool', __FILE__)
 require File.expand_path('../basic_spec', __FILE__)
 require File.expand_path('../enum_spec', __FILE__)
+require File.expand_path('../string_spec', __FILE__)
