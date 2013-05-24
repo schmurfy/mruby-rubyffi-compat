@@ -2,14 +2,15 @@ module FFI::Library
   def ffi_lib(libnames)
     libnames = [libnames] unless libnames.is_a?(Array)
     libnames.each do |libname|
-      @dlh = CFunc::call(CFunc::Pointer, "dlopen", libname.to_s, CFunc::Int.new(1))
-      unless @dlh.is_null?()
-        @ffi_lib = libname
+      lib = FFICompat::DynamicLibrary.new(libname)
+      
+      if lib.exist? || (libnames[0] == :c)
+        @ffi_lib = lib
         break
       end
     end
-    
-    if (libnames[0] != :c) && !@ffi_lib
+        
+    unless @ffi_lib
       raise "library not found: #{libnames}"
     end
   end
@@ -63,7 +64,7 @@ module FFI::Library
   end  
   
   def attach_function(function_name, arguments_type, result_type)
-    f= add_function(@ffi_lib, function_name, arguments_type, result_type)
+    f = @ffi_lib.create_function(function_name, arguments_type, result_type)
 
     singleton_class.define_method(function_name) do |*args, &b|  
       f.invoke(*args, &b)

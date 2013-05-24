@@ -3,7 +3,7 @@ class Function
 
   def initialize where,name,args,return_type,results=[-1]
     @arguments = args
-    @where = where
+    @lib = lib
     @name = name
     @return_type = return_type
     @results = results
@@ -146,7 +146,7 @@ class Function
     end
 
     # call the function
-    r = CFunc::libcall2(get_return_type,@where,@name.to_s,*invoked)
+    r = @lib.call(get_return_type(), @name.to_s, *invoked)
 
     len = 1
     if ary = @return_type.array
@@ -243,7 +243,7 @@ class Function
     when :struct
       t = @return_type.struct
     end  
-    puts "#{ljust(@where)} #{ljust(@name)}"
+    puts "#{ljust(@lib)} #{ljust(@name)}"
     puts "#{ljust(t)} #{@return_type.array ? "1" : "0"}"
   
    arguments.each do |a|
@@ -275,76 +275,6 @@ def ljust s
 end
 
 
-def add_function where,name,at,rt,ret=[-1]
-  i=0
-  args = at.map do |a|
-  
-    arg=Argument.new
-    arg[:index] = i
-    i=i+1
-    direction,array,type,error,callback,data,allow_null = :in,false,:pointer,false,false,false ,false 
-    
-    while a.is_a?(Hash)
-      case a.keys[0]
-      when :out
-        direction = :out
-      when :inout
-        direction = :inout
-      when :allow_null
-        allow_null = true
-      when :callback
-        callback = a[a.keys[0]]
-      else
-      end
-      
-      a = a[a.keys[0]]
-    end
-    
-    if a.is_a? Array
-      array = ArrayStruct.new
-      arg[:array][:type] = a[0]
-      a = :array
-    end
-    
-
-    type = a
-    arg[:type] = type    
-    arg[:direction] = direction
-    arg[:allow_null] = allow_null
-    arg[:callback] = callback
-    arg
-  end
-  
-  interface = false
-  array = false
-  object = false
-  
-  rett = Return.new
-  
-  while rt.is_a? Hash
-    case rt.keys[0]
-    when :struct
-      rett[:struct] = rt[rt.keys[0]]
-      rett[:type] = :struct
-      rt = nil
-    when :object
-      rett[:object] = rt[rt.keys[0]]
-      rett[:type] = :object
-      rt = nil
-    end
-    rt = rt[rt.keys[0]]
-  end
-  
-  if rt.is_a? Array
-    ret[:type] = :array
-    ret[:array] = ArrayStruct.new
-    ret[:array][:type] = rt[0]
-  elsif rt
-    rett[:type] = rt
-  end
-  
-  Function.new(where,name,args,rett,ret)
-end
 
 
 
