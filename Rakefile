@@ -38,7 +38,7 @@ end
 
 task :mrbtest => :mrbpack do
   # replace ourself with mruby process
-  system('mruby tmp/blob')
+  sh 'mruby tmp/blob'
 end
 
 file 'specs/libtest/libtest.dylib' => ["specs/libtest/libtest.c"] do
@@ -52,3 +52,7 @@ end
 file 'specs/libtest/libtest.so' => ["specs/libtest/libtest.o"] do
   sh "gcc -shared -o specs/libtest/libtest.so specs/libtest/libtest.o"
 end
+
+
+task :macosx => ['specs/libtest/libtest.dylib']
+task :linux => ['specs/libtest/libtest.so']

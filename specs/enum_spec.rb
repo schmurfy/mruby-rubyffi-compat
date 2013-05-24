@@ -13,6 +13,7 @@ module FFITests
   end
 end
 
+header "Enum tests"
 
 should 'accept symbol as enum argument' do
   eq(0, FFITests::TestLib.is_work_day(:sunday))
