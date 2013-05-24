@@ -1,7 +1,7 @@
 class Function
   attr_reader :return_type
 
-  def initialize where,name,args,return_type,results=[-1]
+  def initialize(lib, name, args, return_type, results=[-1])
     @arguments = args
     @lib = lib
     @name = name
@@ -9,7 +9,7 @@ class Function
     @results = results
   end
   
-  def set_closure closure
+  def set_closure(closure)
     @closure = closure
   end
   
@@ -82,8 +82,7 @@ class Function
   end
   
   attr_reader :arguments
-  def invoke *args,&b
-
+  def invoke(*args, &b)
     have = args.length
     required = len=get_required.length
     max = len+get_optionals.length
