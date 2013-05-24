@@ -18,6 +18,7 @@ task :mrbpack do
     enum_spec.rb
     string_spec.rb
     callbacks_spec.rb
+    pointer_spec.rb
   ).each do |path|
     target_files << File.expand_path("../specs/#{path}", __FILE__)
   end

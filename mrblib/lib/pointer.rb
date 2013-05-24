@@ -8,10 +8,10 @@ class FFI::Pointer < CFunc::Pointer
     end
   end
   
-  def write_array_of type,a
-    ca = CFunc::CArray(TYPES[type]).refer(self.addr)
+  def put_array_of(offset, type, arr)
+    ca = CFunc::CArray(TYPES[type]).refer(self.offset(offset).addr)
 
-    a.each_with_index do |q,i|
+    arr.each_with_index do |q, i|
       ca[i].value = q
     end
     return self
@@ -21,13 +21,13 @@ class FFI::Pointer < CFunc::Pointer
     nil
   end
   
-  def read_array_of type,len
-    ca = CFunc::CArray(TYPES[type]).refer(self.addr)
+  def get_array_of(offset, type, len)
+    ca = CFunc::CArray(TYPES[type]).refer(self.offset(offset).addr)
     (0...len).map do |i|
       type == :pointer ? FFI::Pointer.refer(ca[i].value.addr) : ca[i].value
     end 
   end
-  
+    
   def write_array_of_string sa
     ca = CFunc::CArray(CFunc::Pointer).refer(self.addr)
     subt = 0
@@ -93,12 +93,20 @@ class FFI::Pointer < CFunc::Pointer
       define_method :"write_#{k}" do |v|
         next write_type v,k
       end
+      
+      define_method :"put_array_of_#{k}" do |offset, v|
+        put_array_of(offset, k, v)
+      end
       define_method :"write_array_of_#{k}" do |v|
-        next write_array_of k,v
-      end  
-      define_method :"read_array_of_#{k}" do |v,&b|
-        next read_array_of(k,v)
+        put_array_of(0, k, v)
+      end
+      
+      define_method :"get_array_of_#{k}" do |offset, v|
+        get_array_of(offset, k,v)
       end            
+      define_method :"read_array_of_#{k}" do |v,&b|
+        get_array_of(0, k,v)
+      end
     end
   end
   
