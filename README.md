@@ -38,6 +38,11 @@ executed with a standard ruby with:
 $ ruby specs/mri_runner.rb
 ```
 
+# Supported platforms
+The tests pass on:
+- Mac OS X 10.8 64bits (my dev machine)
+- BeagleBone (ARM 32bits cpu) running linux 3.2 kernel
+
 # Design / Goals
 
 My main goal is not to provide 100% coverage for the ffi gem api but to provide a
