@@ -6,7 +6,20 @@ def assert_equal(expected, given)
   end
 end
 
+def assert_true(g)
+  eq(true,g)
+end
+
+def assert_false(g)
+  eq(false,g)
+end
+
+def assert q
+  assert_equal true,!!q
+end
+
 alias :eq :assert_equal
+
 
 def header(str)
   puts "\n#{str}:"
@@ -17,4 +30,5 @@ def should(msg)
   yield
   puts "OK"
 end
+
 
