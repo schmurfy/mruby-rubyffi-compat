@@ -23,33 +23,14 @@ end
 # Represents Argument information
 # and defines ways to create and convert
 # Arguments to/from c
-class Argument < Struct.new(:type,:callback,:value,:index,:enum)
+class Argument < Struct.new(:type,:value,:index)
   # Sets value from an argument passed to Function#invoke
   def set v
     self[:value] = v
   end
   
   include FFIType2CFuncType
-  
-  # Resolve and create the appropiate 
-  # pointer from Argument properties for Function#invoke
-  def make_pointer mul = 1
-    if type == :callback
-      if value.is_a?(CFunc::Closure)
-        return value
-      elsif cb=FFI::Library.callbacks[callback]
-        return FFI::Closure.add callback,cb[1],cb[0]
-      else
-        return FFI::DefaultClosure.new
-      end
-    else
-      tt = FFI::TYPES[type] ? type : :pointer
-      
-      q=FFI::MemoryPointer.new(tt,mul)
-      return q#FFI::MemoryPointer.new(tt,mul)
-    end
-  end
-  
+    
   include Cvalue2RubyValue
   
   # Sets the appropiate value for an Argument for Function#invoke
@@ -76,17 +57,11 @@ end
 
 
 # Represents information of a return_value of Function#invoke
-class Return < Struct.new(:type,:enum)
+class Return < Struct.new(:type)
   include FFIType2CFuncType
   
   def get_c_type
-    if type == :enum
-      CFunc::Int
-    elsif type == :object
-      CFunc::Pointer
-    else
       FFI::TYPES[type]
-    end
   end
   
   include Cvalue2RubyValue
@@ -98,13 +73,7 @@ class Return < Struct.new(:type,:enum)
       if type == :bool
         ptr.value == 1
       else
-        n = ptr.value
-  
-        if type == :enum
-          return enum.enum?[n]
-        end
-  
-        return n
+        return ptr.value
       end
     else
       ptr = FFI::Pointer.refer(ptr.addr)
