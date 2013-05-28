@@ -1,4 +1,3 @@
-
 # What is this ?
 
 Abstraction layer on top of mruby-cfunc to mimic the standard ffi ruby gem and allow hybrid gems working on both MRI and mruby.
@@ -42,6 +41,7 @@ $ ruby specs/mri_runner.rb
 The tests pass on:
 - Mac OS X 10.8 64bits (my dev machine)
 - BeagleBone (ARM 32bits cpu) running linux 3.2 kernel
+- Kubuntu (linux) x86_64 3.5.0-17-generic
 
 # Design / Goals
 
