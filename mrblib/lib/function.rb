@@ -1,12 +1,11 @@
 class Function
   attr_reader :return_type
 
-  def initialize(lib, name, args, return_type, results=[-1])
+  def initialize(lib, name, args, return_type)
     @arguments = args
     @lib = lib
     @name = name
     @return_type = return_type
-    @results = results
   end
   
   
