@@ -3,10 +3,11 @@ module Cvalue2RubyValue
   def to_ruby ptr
     if type == :pointer
       return ptr
-    elsif type == :enum
-      r = ptr.send :"read_int"
-      return r if r == -1
-      return enum.enum?[r]
+    elsif e=FFI::Library.enums[type]
+      q = ptr.value
+	    return e.find do |k,v|
+	      v == q
+	    end[0] || q
     else 
       tt = type
       return ptr.send(:"read_#{tt}")  
@@ -73,7 +74,15 @@ class Return < Struct.new(:type)
       if type == :bool
         ptr.value == 1
       else
-        return ptr.value
+        q = ptr.value
+        
+        if e=FFI::Library.enums[type]
+	        return e.find do |k,v|
+	          v == q
+	        end[0] || q
+	      end
+      	
+        return q
       end
     else
       ptr = FFI::Pointer.refer(ptr.addr)
