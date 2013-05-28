@@ -21,6 +21,11 @@ int is_work_day( enum day day_of_week ){
   return ret;
 }
 
+// A function that returns a memeber of the Day enum type
+enum day my_favorite_day(){
+  return SATURDAY;
+}
+
 
 unsigned int return_uint(unsigned int n){
   return n;
