@@ -34,7 +34,7 @@ class Function
       end
 
       # call the function
-      r = CFunc::libcall2(get_return_type,@where,@name.to_s,*invoked)
+      r = @lib.call(get_return_type,@name.to_s,*invoked)
       
       arguments.each do |a|
 	a.set nil
