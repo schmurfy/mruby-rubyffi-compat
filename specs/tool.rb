@@ -2,7 +2,7 @@
 
 def assert_equal(expected, given)
   if expected != given
-    raise "Expected #{expected}, got #{given}"
+    raise "Expected #{expected}, got #{given.inspect}"
   end
 end
 
@@ -26,7 +26,12 @@ def header(str)
 end
 
 def should(msg)
-  print "  Should #{msg}... #{' ' * (35 - msg.size)}"
+  spaces = 50 - msg.size
+  if spaces < 0
+    raise "raise spaces count in tool.rb"
+  end
+  
+  print "  Should #{msg}... #{' ' * spaces}"
   yield
   puts "OK"
 end
