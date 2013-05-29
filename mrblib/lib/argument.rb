@@ -5,9 +5,9 @@ module Cvalue2RubyValue
       return ptr
     elsif e=FFI::Library.enums[type]
       q = ptr.value
-	    return e.find do |k,v|
-	      v == q
-	    end[0] || q
+      return e.find do |k,v|
+        v == q
+      end[0] || q
     else 
       tt = type
       return ptr.send(:"read_#{tt}")  
@@ -77,11 +77,11 @@ class Return < Struct.new(:type)
         q = ptr.value
         
         if e=FFI::Library.enums[type]
-	        return e.find do |k,v|
-	          v == q
-	        end[0] || q
-	      end
-      	
+          return e.find do |k,v|
+            v == q
+          end[0] || q
+        end
+        
         return q
       end
     else
