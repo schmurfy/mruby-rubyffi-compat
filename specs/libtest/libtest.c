@@ -39,23 +39,6 @@ void return_uint_by_address(unsigned int *out){
   *out = 42;
 }
 
-
-struct s1
-{
-  uint32_t n1;
-  uint32_t n2;
-  uint16_t shorty;
-  double d1;
-};
-
-void fill_struct(struct s1 *s)
-{
-  s->n1 = 56;
-  s->n2 = 982;
-  s->shorty = 12;
-  s->d1 = 6.78;
-}
-
 void test(){
   printf("Yeah !\n");
 }
@@ -63,7 +46,12 @@ void test(){
 
 
 
+
+
+
+////////////////////////////
 // string_specs
+////////////////////////////
 static char buffer[200];
 void save_string(const char *str)
 {
@@ -79,7 +67,10 @@ unsigned int get_char(unsigned int n)
 
 
 
+
+////////////////////////////
 // callbacks_specs
+////////////////////////////
 struct SomeObject {
   struct SomeObject *next ;
   char              *name ;
@@ -109,5 +100,56 @@ void set_object_callback(struct SomeObject *waggler, notifyWhenYouWant callback)
 }
 
 
+
+
+////////////////////////////
+// struct
+////////////////////////////
+
+
+struct buffer_struct {
+ uint8_t id; 
+ uint8_t name[5];
+}; 
+
+
+struct s1
+{
+  uint32_t n1;
+  uint32_t n2;
+  uint16_t shorty;
+  double d1;
+};
+
+void fill_struct(struct s1 *s)
+{
+  s->n1 = 56;
+  s->n2 = 982;
+  s->shorty = 12;
+  s->d1 = 6.78;
+}
+
+struct buffer_struct *create_buffer()
+{
+  struct buffer_struct *ret = malloc(sizeof(struct buffer_struct));
+  ret->id = 56;
+  strcpy(ret->name, "rambo !");
+  printf("\nbase: %llx\n", (uint64_t)ret);
+  printf("name: %llx\n", (uint64_t)&ret->name);
+  
+  uint8_t *ptr = (uint8_t *)ret;
+  printf("%x %x %x %x %x %x\n", ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5]);
+  
+  return ret;
+}
+
+
+void inspect_buffer(struct buffer_struct *s)
+{
+  uint8_t *ptr = (uint8_t *)s;
+  printf("%x %x %x %x %x %x\n", ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5]);
+  printf("id: %d\n", s->id);
+  printf("str: %s\n", s->name);
+}
 
 

@@ -21,17 +21,6 @@ module FFITests
     attach_function :return_double, [:double], :double
     attach_function :return_uint_by_address, [:pointer], :void
     
-    
-    class S1Struct < FFI::Struct
-      layout(
-          :n1,  :uint32,
-          :n2,  :uint32,
-          :s1,  :uint16,
-          :d1,  :double,
-        )
-    end
-    
-    attach_function :fill_struct, [:pointer], :void
   end
 end
 
@@ -54,15 +43,6 @@ should 'return double by value' do
   assert_equal(4.32, ret)
 end
 
-should 'fill structure' do
-  s = FFITests::TestLib::S1Struct.new
-  FFITests::TestLib.fill_struct(s.addr)
-  
-  assert_equal(56, s[:n1])
-  assert_equal(982, s[:n2])
-  assert_equal(12, s[:s1])
-  assert_equal(6.78, s[:d1])
-end
 
 
 should 'sleep 1s' do

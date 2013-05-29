@@ -15,6 +15,7 @@ task :mrbpack do
   %w(
     tool.rb
     basic_spec.rb
+    struct_spec.rb
     enum_spec.rb
     string_spec.rb
     callbacks_spec.rb
