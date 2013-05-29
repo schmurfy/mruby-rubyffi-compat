@@ -17,3 +17,11 @@ should 'support array get/put' do
   eq([56, 2], p.get_array_of_uint16(2, 2))
 end
 
+
+
+should 'support array read/write for strings' do
+  p = FFI::MemoryPointer.new(:uint8, 20)
+  p.write_string("bob")
+  
+  eq("bob", p.read_string())
+end
