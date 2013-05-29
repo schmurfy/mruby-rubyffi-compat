@@ -16,41 +16,35 @@ class Function
   attr_reader :arguments
 
   def call *o
-      raise ArgumentError.new("#{o.length} for #{arguments.length}") unless o.length == arguments.length
+    raise ArgumentError.new("#{o.length} for #{arguments.length}") unless o.length == arguments.length
 
-      invoked = []
+    invoked = []
+    
+    arguments.each_with_index do |a,i|
+      a.set o[i]
       
-      arguments.each_with_index do |a,i|
-	a.set o[i]
-	
-	ptr = a.for_invoke
-	
-	if a.value == nil
-	  # do not wrap nil, pass it as is !
-	  invoked << nil
-	else
-	  invoked << ptr
-	end
+      ptr = a.for_invoke
+      
+      if a.value == nil
+        # do not wrap nil, pass it as is !
+        invoked << nil
+      else
+        invoked << ptr
       end
+    end
 
-      # call the function
-      r = @lib.call(get_return_type,@name.to_s,*invoked)
-      
-      arguments.each do |a|
-	a.set nil
-      end
-      
-      return(@return_type.type == :void ? nil : @return_type.to_ruby(r))
+    # call the function
+    r = @lib.call(get_return_type,@name.to_s,*invoked)
+    
+    arguments.each do |a|
+      a.set nil
+    end
+    
+    return(@return_type.type == :void ? nil : @return_type.to_ruby(r))
   end
 
   def invoke(*args, &b)
-    call *args,&b
+    call(*args, &b)
   end
+  
 end
-
-
-
-
-
-
-
