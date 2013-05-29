@@ -37,7 +37,7 @@ task :mrbpack do
 end
 
 
-task :mrbtest => :mrbpack do
+task :mrbtest => [:mrbpack, :libtest] do
   # replace ourself with mruby process
   sh 'mruby tmp/blob'
 end
@@ -54,6 +54,8 @@ file 'specs/libtest/libtest.so' => ["specs/libtest/libtest.o"] do
   sh "gcc -shared -o specs/libtest/libtest.so specs/libtest/libtest.o"
 end
 
-
-task :macosx => ['specs/libtest/libtest.dylib']
-task :linux => ['specs/libtest/libtest.so']
+if RUBY_PLATFORM.include?('darwin')
+  task :libtest => 'specs/libtest/libtest.dylib'
+else
+  task :libtest => 'specs/libtest/libtest.so'
+end
