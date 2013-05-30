@@ -2,6 +2,22 @@ module FFI
   class Struct < CFunc::Struct
     alias_method :pointer, :addr
     
+    def array_members
+      self.class.instance_variable_get("@array_members")
+    end    
+    
+    def [] k
+      if (map = (array_members || {})[k])
+  t,s = map[0],map[1]
+	ptr = super(k)
+	CFunc::CArray(FFI.find_type(t)).refer(ptr.addr)
+      else
+	super
+      end
+    end  
+   
+    
+    
     def self.members
       elements.map{|e| e[1] }
     end
@@ -9,6 +25,7 @@ module FFI
     def self.is_struct?
       true
     end
+    
     def self.every(a,i)
       b=[]
       q=a.clone
@@ -27,7 +44,20 @@ module FFI
     end
   
     def self.layout *o
-      define(*every(o,2))
+      l = nil
+      n = o.map do |q|
+	if q.is_a?(Array)
+	  t = q[0]
+	  s = q[1]
+	  (@array_members ||= {})[l] = q
+	  next(:pointer)
+	else
+	  l = q
+	  next q
+	end
+      end
+      
+      define(*every(n,2))
     end
   end
   
