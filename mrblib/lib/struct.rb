@@ -58,6 +58,7 @@ module FFI
 end
 
 class FFI::Struct::InlineArray
+  include Enumerable
   def initialize ptr
     @pointer = ptr
   end
@@ -66,28 +67,19 @@ class FFI::Struct::InlineArray
     @pointer
   end
   
-  def [] i
-    to_ptr[i].value
+  def each
+    for i in 0..to_ptr.class.size-1
+      q = to_ptr[i].value 
+      yield q unless i == to_ptr.class.size-1 and q == 0
+    end
   end
   
   def []= i,v
-    to_ptr[i].value = v
+    to_ptr[i].value = v	
   end
   
-  def to_array
-    a = []
-    for i in 0..to_ptr.class.size-1
-      a << to_ptr[i].value
-    end
-    
-    # MRI ffi gem does not return the trailing null in the array
-    if a.last == 0 then a.pop end
-    
-    return a
-  end
-  
-  def to_a
-    to_array
+  def [] i
+    to_ptr[i].value	
   end
   
   def to_s
