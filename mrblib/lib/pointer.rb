@@ -76,11 +76,11 @@ class FFI::Pointer < CFunc::Pointer
   end
   
   def read_type type
-    return TYPES[type].get(self)
+    return TYPES[type].get(self.addr)
   end
   
   def write_type n,type
-    TYPES[type].set(self, n)
+    TYPES[type].set(self.addr, n)
     return self
   end
   
