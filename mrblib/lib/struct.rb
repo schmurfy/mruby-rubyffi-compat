@@ -79,6 +79,10 @@ class FFI::Struct::InlineArray
     for i in 0..to_ptr.class.size-1
       a << to_ptr[i].value
     end
+    
+    # MRI ffi gem does not return the trailing null in the array
+    if a.last == 0 then a.pop end
+    
     return a
   end
   
