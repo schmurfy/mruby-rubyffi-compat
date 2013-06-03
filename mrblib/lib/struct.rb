@@ -20,6 +20,12 @@ module FFI
           d << q.shift
         end
 
+        if d[1].is_a?(Array)
+	        type = FFI.find_type(d[1][0])
+	        size = d[1][1]
+	        d1 = CFunc::Pointer(type)[size]
+	      end
+	
         d[1] = FFI.find_type(d[1]) unless d[1].respond_to?(:"is_struct?") || d[1].is_a?(CFunc::CArray)
         b.push(*d.reverse)
         d=[]
