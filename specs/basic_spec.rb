@@ -1,4 +1,3 @@
-
 module FFITests
   module CLib
     extend FFI::Library
@@ -26,13 +25,12 @@ end
 
 header "Basic tests"
 
-
 # Fix for issue #3 made use of .addr required
 should 'return integer by address' do
   n = FFI::MemoryPointer.new(:uint32)
-  FFITests::TestLib.return_uint_by_address(n.addr)
+  FFITests::TestLib.return_uint_by_address(n.get_pointer(0))
   assert_equal(42, n.read_uint32())
-end
+endd
 
 
 should 'return integer by value' do
@@ -45,13 +43,16 @@ should 'return double by value' do
   assert_equal(4.32, ret)
 end
 
-# Issue #3
-# Behaviour was segfault
-should 'Refered CFunc::UInt32 set and retieve values properly' do
-  int = CFunc::UInt32.new()
-  ptr = FFI::Pointer.refer(int.addr)
-  ptr.write_int(2)
-  assert_equal(2,ptr.read_int)
+# only test on mruby
+if ::Object.const_defined?(:CFunc)
+  # Issue #3
+  # Behaviour was segfault
+  should 'Refered CFunc::UInt32 set and retieve values properly' do
+    int = CFunc::UInt32.new()
+    ptr = FFI::Pointer.refer(int.addr)
+    ptr.write_int(2)
+    assert_equal(2,ptr.read_int)
+  end
 end
 
 # Issue #3
