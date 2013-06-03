@@ -36,4 +36,30 @@ should 'fill structure' do
   eq(6.78,  s[:d1])
 end
 
+bs = nil
 
+should 'have buffer of `rambo !`' do
+  bs_value = FFITests::TestLib::create_buffer
+  bs = FFITests::TestLib::BufferStruct.new(bs_value)
+  eq "rambo !",bs[:name].to_s 
+end
+
+should "behave like array" do
+  chars = [114,97,109,98,111,32,33]
+  chars.each_with_index do |c,i|
+    eq c,bs[:name][i]
+  end
+end
+
+chars = [65,66,67,68,69,70,71]
+
+should 'be overwritten' do
+  chars.each_with_index do |c,i|
+    bs[:name][i] = c    
+  end
+  eq "ABCDEFG",bs[:name].to_s
+end
+
+should 'become array' do
+  eq chars,bs[:name].to_a 
+end
