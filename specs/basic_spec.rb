@@ -24,13 +24,12 @@ module FFITests
 end
 
 header "Basic tests"
-
 # Fix for issue #3 made use of .addr required
 should 'return integer by address' do
   n = FFI::MemoryPointer.new(:uint32)
-  FFITests::TestLib.return_uint_by_address(n.get_pointer(0))
+  FFITests::TestLib.return_uint_by_address(n.addr)
   assert_equal(42, n.read_uint32())
-endd
+end
 
 
 should 'return integer by value' do
@@ -61,10 +60,8 @@ should "return 2" do
   eq 2,FFITests::CLib.abs(2)
 end
 
-
 should 'sleep 1s' do
   t = Time.now
   FFITests::CLib.sleep(1)
   assert_equal(1, (Time.now - t).to_i)
 end
-
