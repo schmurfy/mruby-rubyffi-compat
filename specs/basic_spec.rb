@@ -47,7 +47,7 @@ end
 if ::Object.const_defined?(:CFunc)
   # Issue #3
   # Behaviour was segfault
-  should 'Refered CFunc::UInt32 set and retieve values properly' do
+  should 'set and retieve values properly' do
     int = CFunc::UInt32.new()
     ptr = FFI::Pointer.refer(int.addr)
     ptr.write_int(2)
