@@ -51,13 +51,13 @@ should "behave like array" do
   end
 end
 
-chars = [65,66,67,68,69,70,0]
+chars = [65,66,67,68,69,70,71]
 
 should 'be overwritten' do
   chars.each_with_index do |c,i|
     bs[:name][i] = c    
   end
-  eq "ABCDEF",bs[:name].to_s
+  eq "ABCDEFG",bs[:name].to_s
 end
 
 should 'become array' do
