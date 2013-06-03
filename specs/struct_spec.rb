@@ -64,3 +64,10 @@ end
 should 'become array' do
   eq chars,bs[:name].to_a 
 end
+
+# should 'allow direct access to buffer characters' do
+#   s_ptr = FFITests::TestLib.create_buffer()
+#   s = FFITests::TestLib::BufferStruct.new(s_ptr)
+#   s[:name][0] = "o".bytes[0] # set a single byte within the struct
+#   eq("oambo !", s[:name].to_ptr.read_string())
+# end
