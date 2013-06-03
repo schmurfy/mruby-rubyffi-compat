@@ -1,5 +1,4 @@
 
-
 module FFITests
   module CLib
     extend FFI::Library
@@ -7,6 +6,7 @@ module FFITests
     ffi_lib :c
     
     attach_function :sleep, [:uint32], :uint32
+    attach_function :abs, [:int],:int
   end
   
   module TestLib
@@ -27,11 +27,13 @@ end
 header "Basic tests"
 
 
+# Fix for issue #3 made use of .addr required
 should 'return integer by address' do
   n = FFI::MemoryPointer.new(:uint32)
-  FFITests::TestLib.return_uint_by_address(n)
+  FFITests::TestLib.return_uint_by_address(n.addr)
   assert_equal(42, n.read_uint32())
 end
+
 
 should 'return integer by value' do
   ret = FFITests::TestLib.return_uint(4)
@@ -43,6 +45,20 @@ should 'return double by value' do
   assert_equal(4.32, ret)
 end
 
+# Issue #3
+# Behaviour was segfault
+should 'Refered CFunc::UInt32 set and retieve values properly' do
+  int = CFunc::UInt32.new()
+  ptr = FFI::Pointer.refer(int.addr)
+  ptr.write_int(2)
+  assert_equal(2,ptr.read_int)
+end
+
+# Issue #3
+# Ensure values are not addresses!
+should "return 2" do
+  eq 2,FFITests::CLib.abs(2)
+end
 
 
 should 'sleep 1s' do
