@@ -32,7 +32,21 @@ module FFI
       end
       b
     end
-  
+
+    alias :_get_member :"[]"
+    
+    def [] k    
+      q = _get_member(k)
+      field = lookup(k)
+      
+      # TODO: thus far field[3] memeber of :new is only way to detect
+      if field[3] == :new 
+	return InlineArray.new(q) 
+      end
+      
+      return q
+    end
+
     def self.layout *o
       define(*every(o,2))
     end
@@ -41,4 +55,38 @@ module FFI
   class Union < Struct
   end
     
+end
+
+class FFI::Struct::InlineArray
+  def initialize ptr
+    @pointer = ptr
+  end
+  
+  def to_ptr
+    @pointer
+  end
+  
+  def [] i
+    to_ptr[i].value
+  end
+  
+  def []= i,v
+    to_ptr[i].value = v
+  end
+  
+  def to_array
+    a = []
+    for i in 0..to_ptr.class.size-1
+      a << to_ptr[i].value
+    end
+    return a
+  end
+  
+  def to_a
+    to_array
+  end
+  
+  def to_s
+    to_ptr.to_s
+  end
 end
