@@ -1,5 +1,6 @@
 
 module FFI
+  # A list of numerical c types in CFunc
   C_NUMERICS = [
     CFunc::Int,
     CFunc::SInt8,
@@ -15,6 +16,7 @@ module FFI
     CFunc::Double
   ]
   
+  # A map of types from Symbol and thier CFunc equivalants
   TYPES = {
     :self     => :pointer,
     :int      => CFunc::Int,
@@ -42,10 +44,16 @@ module FFI
     :array    => CFunc::CArray
   }
   
+  # @param [Symbol] name
+  # @return the resolved class for CFunc
+  # Find a type from symbol
   def self.find_type t
     return FFI::TYPES[t] || CFunc::Pointer
   end  
 
+  # Find the size of a type
+  # @param t [Symbol] of the type to resolve
+  # @return [Integer] size of type +t+
   def self.type_size t
     return FFI::TYPES[t].size
   end
