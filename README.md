@@ -4,6 +4,16 @@ Abstraction layer on top of mruby-cfunc to mimic the standard ffi ruby gem and a
 
 Check the specs if you want to see what is currently supported.
 
+# Synopsis
+```ruby
+module MyLib
+  extend FFI::Library
+  ffi_lib 'c'
+  attach_function :puts, [ :string ], :int
+end
+
+MyLib.puts 'Hello, World using libc!'
+```
 
 # Running tests
 
