@@ -8,7 +8,7 @@ module FFI
       def initialize struct
 	@klass = struct 
       end
-    ends
+    end
     
     alias_method :pointer, :addr
     
