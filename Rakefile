@@ -20,6 +20,7 @@ task :mrbpack do
     string_spec.rb
     callbacks_spec.rb
     pointer_spec.rb
+    types_spec.rb
   ).each do |path|
     target_files << File.expand_path("../specs/#{path}", __FILE__)
   end
