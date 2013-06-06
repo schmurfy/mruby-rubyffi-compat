@@ -1,15 +1,5 @@
 module FFI
   class Struct < CFunc::Struct
-    # Used to implement Struct.by_ref in the specification of types
-    class ReturnAsInstance
-      attr_reader :klass
-      
-      # @param struct [FFI::Struct] subclass to point to
-      def initialize struct
-	@klass = struct 
-      end
-    ends
-    
     alias_method :pointer, :addr
     
     # @return [Array] of field names
@@ -22,15 +12,6 @@ module FFI
     # @return true
     def self.is_struct?
       true
-    end
-    
-    # @return [ReturnAsInstance] pointing to self
-    def self.by_ref
-      ReturnAsInstance.new(self)
-    end
-    
-    class << self
-      attr_reader :string_members  
     end
     
     def self.every(a,i)
@@ -69,12 +50,6 @@ module FFI
       # TODO: thus far field[3] memeber of :new is only way to detect
       if field[3] == :new 
 	return InlineArray.new(q) 
-      end
-      
-      if sma=self.class.string_members
-	if sma.index(k)
-	  return q.to_s
-	end
       end
       
       return q

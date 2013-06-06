@@ -24,15 +24,11 @@ module FFI::Library
     @@callbacks
   end
   
-  @@typedefs = {}
+
+  
   def typedef(type_name, alias_name)
-    @@typedefs[alias_name] = type_name
     FFI::TYPES[alias_name] = FFI.find_type(type_name)
   end  
-  
-  def self.typedefs
-    @@typedefs
-  end
   
   @@enums = {}
   def enum(enum_name, arr)
