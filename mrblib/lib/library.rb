@@ -9,9 +9,9 @@ module FFI
   #     attach_function :puts, [ :string ], :int
   #   end
   #
-  #    MyLib.puts 'Hello, World using libc!'
+  #   MyLib.puts 'Hello, World using libc!'
   module Library
-    # @param [Array] names names of libraries to load
+    # @param libnames [Array] names of libraries to load
     # @return [Array<FFICompat::DynamicLibrary>]
     # @raise if a library cannot be opened
     # Load native libraries.    
@@ -50,7 +50,7 @@ module FFI
     #    callback(:SomeOtherFooCallback,[],SomeOtherFoo.by_ref)
     # TODO: implement structs as types
     def callback(name, arguments_type, result_type)
-      @@callbacks[name] = [ arguments_type.map{|t| FFI::TYPES[t]}, FFI::TYPES[result_type] ]
+      @@callbacks[name] = [arguments_type,result_type]
     end
     
     # @return [Hash] of the callbacks
@@ -61,7 +61,7 @@ module FFI
 
     @@typedefs = {}
     
-    # Adds a typdef
+    # Adds a typedef
     # @param type_name [Symbol,FFI::Struct] to alias against
     # @param alias_name [Symbol] to map to
     # @return the resolved type class
@@ -137,10 +137,9 @@ module FFI
     # Attach C function +func+ to this module.
     #
     #
-    # @param [#to_s] name name of ruby method to attach as
-    # @param [#to_s] func name of C function to attach
-    # @param [Array<Symbol,FFI::Struct,FFI::Struct::ReturnAsInstance>] args an array of types
-    # @param [Symbol,FFI::Struct,FFI::Struct::ReturnAsInstance] returns type of return value
+    # @param function_name [#to_s] name of C function to attach
+    # @param arguments_type [Array<Symbol,FFI::Struct,FFI::Struct::ReturnAsInstance>] an array of types of the parameters
+    # @param result_type [Symbol,FFI::Struct,FFI::Struct::ReturnAsInstance] type of return value
     #
     # @return [FFI::Function]    
     def attach_function(function_name, arguments_type, result_type)
