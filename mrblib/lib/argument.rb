@@ -79,7 +79,7 @@ class Argument < Struct.new(:type,:value,:index)
         return cfunc_type.new(value)
       
       elsif (callback_type = FFI::Library.callbacks[type])
-        FFI::Closure.new(callback_type[1], callback_type[0], &value)
+        FFI::Closure.new(*callback_type, &value)
 
       elsif (struct = type).respond_to?(:is_struct?)
 	if value.is_a?(CFunc::Struct)
@@ -115,15 +115,6 @@ end
 # Represents information of a return_value.
 class Return < Struct.new(:type)
   include FFIType2CFuncType
-  
-  #  Find the absolute c_type
-  #  FFI::Struct's are resolved to CFunc::Pointer
-  #  FFI::Struct::ReturnAsInstance's are resolved to the FFI::Struct they represent
-  #
-  # @return the absolute type
-  def get_c_type
-    return FFI::TYPES[type] || (type.respond_to?(:is_struct?) ? CFunc::Pointer : (type.is_a?(FFI::Struct::ReturnAsInstance) ? type.klass : nil))
-  end
   
   include Cvalue2RubyValue
   

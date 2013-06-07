@@ -61,19 +61,13 @@ module FFI
 end
 
 module FFIType2CFuncType
-  # Returns a Class of CFunc namespace types
-  def ffi_type
-    case type
-    when :object
-      CFunc::Pointer
-    when :struct
-      CFunc::Pointer
-    when :union
-      CFunc::Pointer
-    when :array
-      CFunc::CArray(array.ffi_type)
-    else
-      FFI::TYPES[type] || CFunc::Pointer
-    end
+  #  Find the absolute c_type
+  #  FFI::Struct's are resolved to CFunc::Pointer
+  #  FFI::Struct::ReturnAsInstance's are resolved to the FFI::Struct they represent
+  #
+  # @return the absolute type
+  def get_c_type
+    return FFI::TYPES[type] || (type.respond_to?(:is_struct?) ? CFunc::Pointer : (type.is_a?(FFI::Struct::ReturnAsInstance) ? type.klass : nil))
   end
+  
 end
