@@ -6,6 +6,8 @@ module FFITests
              :value, :double
     end
     
+    typedef :int,:my_int
+    
     class SomeStruct < FFI::Struct
       layout :id,:my_int,
 	    :name,:string
@@ -45,7 +47,6 @@ state = nil
 
 should "Handle types in callback" do
   cb = proc do |some_obj,dbl|
-    p some_obj
     assert_true(some_obj.is_a?(FFITests::TestLib::SomeStruct))
     assert_equal(3.3,dbl)
     state = true
