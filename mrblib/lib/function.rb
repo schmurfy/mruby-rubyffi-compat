@@ -1,11 +1,10 @@
 module FFI
   # Describes a FFI::Function
   class FunctionType
-    attr_accessor :param_types,:return_type,:address
-    def initialize rt,pta,addr
+    attr_accessor :param_types,:return_type
+    def initialize rt,pta
       @param_types = pta
       @return_type = rt
-      @address = addr
     end
   end
 end
@@ -13,13 +12,14 @@ end
 module FFI
   # Represents a Function that can be invoked
   class Function
-    attr_accessor :function_type,:invoker
+    attr_accessor :function_type,:invoker,:address
     
     # @param rt [Symbol] that can be resolved to a type that describes the return type.
     # @param pta [Array] of Symbol's that can be resolved to a type that describe the parameter types.
     # @param addr [Array] of [DynamicLibrary,String] that describes where to find the function.
     def initialize rt,pta,addr
-      @function_type = FunctionType.new(rt,pta,addr)
+      @address = addr
+      @function_type = FunctionType.new(rt,pta)
     end
     
     # Calls the function represented passing params.
@@ -48,7 +48,7 @@ module FFI
     # @return [FFICompat::FunctionInvoker] that was created
     def create_invoker()
       ft = function_type
-      rt,pta,address = ft.return_type,ft.param_types,ft.address
+      rt,pta = ft.return_type,ft.param_types
       
       i=0
       args = pta.map do |a|
