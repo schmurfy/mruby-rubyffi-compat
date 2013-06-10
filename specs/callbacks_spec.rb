@@ -19,7 +19,7 @@ module FFITests
     attach_function :create_object, [:double], :pointer
     attach_function :free_object, [:pointer], :void
     attach_function :set_object_callback, [:pointer, :object_callback], :void
-    attach_function :test_types_callback, [:types_callback], :void
+    attach_function :test_types_callback, [:types_callback], :bool
   end
 end
 
@@ -52,7 +52,7 @@ should "Handle types in callback" do
     state = true
   end
 
-  FFITests::TestLib::test_types_callback(cb)
+  assert_true FFITests::TestLib::test_types_callback(cb)
 
   assert_true(state)
 end

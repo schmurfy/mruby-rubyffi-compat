@@ -191,3 +191,11 @@ const char* some_struct_get_name(SomeStruct* s)
 }
 
 
+//
+typedef int (*test_types_cb)(SomeStruct *ss, double val);
+int test_types_callback(test_types_cb cb)
+{
+  SomeStruct* ss = some_struct_new("fred");
+  double dbl = 3.3;
+  return cb(ss,dbl);
+}
