@@ -159,6 +159,7 @@ class FFI::Struct::InlineArray
   attr_reader :size
   
   # @param ptr the pointer to wrap
+  # @param size [Integer] length of array
   def initialize ptr,size
     @pointer = ptr
     @size = size
@@ -183,7 +184,7 @@ class FFI::Struct::InlineArray
     to_ptr[i].value	
   end
   
-  # @return the rsult of calling `to_s` the wrapped pointer
+  # @return the result of calling `to_s` the wrapped pointer
   def to_s
     to_ptr.to_s
   end
