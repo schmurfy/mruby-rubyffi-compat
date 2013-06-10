@@ -1,4 +1,53 @@
 module FFI
+  # @example
+  #   module Foo
+  #     extend FFI::Library
+  #     
+  #     ffi_lib "foo_lib"
+  #     
+  #     class FOO < FFI::Struct
+  #       layout :id,   :int,
+  # 	     :name, [:uint8,5]
+  #     end
+  #     
+  #     attach_function :foo_return_a_foo,[],:pointer
+  #     
+  #     # These two functions accept FOO class
+  #     # It would be the same as using :pointer
+  #     attach_function :foo_make_foo,[:string],FOO
+  #     attach_function :foo_take_a_foo,[FOO],:void
+  #     
+  #     # These two functions deal with FOO instances
+  #     #
+  #     # returns an FOO instance
+  #     attach_function :foo_make_foo2,[:string],FOO.by_ref
+  #     # must be passed instance of FOO
+  #     attach_function :foo_take_a_foo2,[FOO.by_ref],:void      
+  #   end
+  #   
+  #   foos = [
+  #     foo_ptr = Foo.foo_return_a_foo, #=> Pointer
+  #     foo_ptr2 = Foo.foo_make_a_foo("Fred"), #=> a Pointer
+  #     foo_struct = Foo.foo_make_foo2("Bob") #=> a Foo::FOO
+  #   ].each do |foo| 
+  #     # all can be passed to take_a_foo
+  #     Foo.take_a_foo(foo)
+  #   end
+  #   
+  #   # ok
+  #   Foo.take_a_foo2(foo_struct) # valid
+  #   # raises
+  #   Foo.take_a_foo2(foo_ptr)    # not valid
+  #   # raises
+  #   Foo.take_a_foo2(foo_ptr2)   # not valid
+  #
+  #   foo_struct[:id] #=> an Integer
+  #   foo_struct[:id] = 3 #=> Set `id`
+  #   foo_struct[:name].to_s #=> String, `name`
+  #   foo_struct[:name][0] #=> first byte
+  #   foo_struct[:name][2] = 65 #=> Set 3rd byte to 65 ('A')
+  #   foo_struct[:name].each do |b| end #=> Iterate over bytes 
+  #   foo_struct[:name].to_a #=> Array of bytes
   class Struct < CFunc::Struct
     # Used to implement Struct.by_ref in the specification of types
     class ReturnAsInstance
@@ -24,7 +73,7 @@ module FFI
       true
     end
     
-    # @return [ReturnAsInstance] pointing to self
+    # @return [FFI::Struct::ReturnAsInstance] pointing to self
     def self.by_ref
       ReturnAsInstance.new(self)
     end
