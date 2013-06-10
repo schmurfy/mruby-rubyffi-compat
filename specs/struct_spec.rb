@@ -49,6 +49,7 @@ should "behave like array" do
   chars.each_with_index do |c,i|
     eq c,bs[:name][i]
   end
+  eq chars,bs[:name].to_a
 end
 
 chars = [65,66,67,68,69,70,71]

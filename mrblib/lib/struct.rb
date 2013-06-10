@@ -67,8 +67,13 @@ module FFI
       field = lookup(k)
       
       # TODO: thus far field[3] memeber of :new is only way to detect
-      if field[3] == :new 
-	return InlineArray.new(q) 
+      if field[3] == :new
+	cls = InlineArray
+	
+	if field[0].type == CFunc::UInt8
+	  cls = CharArray
+	end
+	return cls.new(q) 
       end
       
       if sma=self.class.string_members
@@ -108,7 +113,7 @@ class FFI::Struct::InlineArray
   def each
     for i in 0..to_ptr.class.size-1
       q = to_ptr[i].value 
-      yield q unless i == to_ptr.class.size-1 and q == 0
+      yield q
     end
   end
   
@@ -124,4 +129,7 @@ class FFI::Struct::InlineArray
   def to_s
     to_ptr.to_s
   end
+end
+
+class FFI::Struct::CharArray < FFI::Struct::InlineArray
 end
