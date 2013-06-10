@@ -31,6 +31,7 @@ module FFI
     
     class << self
       attr_reader :string_members  
+      attr_reader :array_members
     end
     
     def self.every(a,i)
@@ -44,15 +45,17 @@ module FFI
         end
 
         if d[1].is_a?(Array)
-	  type = FFI.find_type(d[1][0])
+	  type = FFI.find_type(t=d[1][0])
 	  size = d[1][1]
 	  d[1] = type[size]
+	  (@array_members ||={})[d[0]] = [t,size]
+
 	end
 	
 	if d[1] == :string
 	  (@string_members ||=[]) << d[0]
 	end
-	
+
         d[1] = FFI.find_type(d[1]) unless d[1].respond_to?(:"is_struct?") || d[1].is_a?(CFunc::CArray)
         b.push(*d.reverse)
         d=[]
@@ -73,7 +76,10 @@ module FFI
 	if field[0].type == CFunc::UInt8
 	  cls = CharArray
 	end
-	return cls.new(q) 
+	
+	s = self.class.array_members[k][1]
+
+	return cls.new(q,s) 
       end
       
       if sma=self.class.string_members
@@ -102,8 +108,9 @@ class FFI::Struct::InlineArray
   include Enumerable
   
   # @param ptr the pointer to wrap
-  def initialize ptr
+  def initialize ptr,size
     @pointer = ptr
+    @size = size
   end
   
   def to_ptr
@@ -111,7 +118,7 @@ class FFI::Struct::InlineArray
   end
   
   def each
-    for i in 0..to_ptr.class.size-1
+    for i in 0..@size-1
       q = to_ptr[i].value 
       yield q
     end
