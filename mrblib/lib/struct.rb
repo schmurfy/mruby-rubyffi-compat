@@ -107,6 +107,8 @@ end
 class FFI::Struct::InlineArray
   include Enumerable
   
+  attr_reader :size
+  
   # @param ptr the pointer to wrap
   def initialize ptr,size
     @pointer = ptr
