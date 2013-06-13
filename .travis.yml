@@ -4,4 +4,6 @@ rvm:
 - 1.8.7
 - 1.9.2
 - 1.9.3
-script: chmod 755 .travis_before.sh && chmod 755 .travis_after.sh && rake mrbtest
+before_script: chmod 755 .travis_before.sh && chmod 755 .travis_after.sh && ./.travis_before.sh 
+script: rake mrbtest
+before_script: ./.travis_after.sh 
