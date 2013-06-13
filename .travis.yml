@@ -1,8 +1,6 @@
 ---
 language: ruby
 rvm:
-- 1.8.7
-- 1.9.2
 - 1.9.3
 before_script: chmod 755 .travis_before.sh && chmod 755 .travis_after.sh && ./.travis_before.sh 
 script: export PATH=$PATH:./tmp/mruby/bin && rake mrbtest
