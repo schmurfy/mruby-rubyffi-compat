@@ -24,3 +24,6 @@ require File.expand_path('../pointer_spec', __FILE__)
 require File.expand_path('../struct_spec', __FILE__)
 require File.expand_path('../types_spec', __FILE__)
 require File.expand_path('../sanity_spec', __FILE__)
+require File.expand_path('../outs_spec', __FILE__)
+require File.expand_path('../ptrcoverage_spec', __FILE__)
+
