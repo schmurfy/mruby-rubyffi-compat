@@ -3,4 +3,3 @@ module FFI
     return CFunc.errno
   end  
 end
-

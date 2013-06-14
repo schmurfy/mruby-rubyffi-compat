@@ -10,5 +10,5 @@ header "String tests"
 should 'save string' do
   FFITests::TestLib.save_string("hi there")
   c = FFITests::TestLib.get_char(0)
-  eq(c, "h".bytes[0].to_i)
+  eq(c, "h".bytes.map do |b| b end[0].to_i)
 end

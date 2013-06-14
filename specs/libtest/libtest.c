@@ -152,4 +152,50 @@ void inspect_buffer(struct buffer_struct *s)
   printf("str: %s\n", s->name);
 }
 
+// For Struct's as types tests
+//
+//
 
+// simple struct
+typedef struct {
+  int id;
+  const char* name;
+} SomeStruct;
+
+// count the objects
+int s_count = 0;
+
+// return initialized struct
+//   with name field filled to passed string
+//   and id set to incremented count
+SomeStruct* some_struct_new(const char* n) 
+{
+  SomeStruct *s = malloc(sizeof(SomeStruct));
+  s->name = n;
+  s->id = s_count++;
+  return s;
+}
+
+// take a SomeStruct*
+// return its id
+int some_struct_get_id(SomeStruct* s)
+{
+  return s->id;
+}
+
+// take a SomeStruct*
+// return its name
+const char* some_struct_get_name(SomeStruct* s)
+{
+  return s->name;
+}
+
+
+//
+typedef int (*test_types_cb)(SomeStruct *ss, double val);
+int test_types_callback(test_types_cb cb)
+{
+  SomeStruct* ss = some_struct_new("fred");
+  double dbl = 3.3;
+  return cb(ss,dbl);
+}
