@@ -7,7 +7,7 @@ module FFI
   #     
   #     class FOO < FFI::Struct
   #       layout :id,   :int,
-  # 	     :name, [:uint8,5]
+  #        :name, [:uint8,5]
   #     end
   #     
   #     attach_function :foo_return_a_foo,[],:pointer
@@ -55,7 +55,7 @@ module FFI
       
       # @param struct [FFI::Struct] subclass to point to
       def initialize struct
-	@klass = struct 
+        @klass = struct
       end
     end
     
@@ -94,16 +94,16 @@ module FFI
         end
 
         if d[1].is_a?(Array)
-	  type = FFI.find_type(t=d[1][0])
-	  size = d[1][1]
-	  d[1] = type[size]
-	  (@array_members ||={})[d[0]] = [t,size]
+          type = FFI.find_type(t=d[1][0])
+          size = d[1][1]
+          d[1] = type[size]
+          (@array_members ||={})[d[0]] = [t,size]
 
-	end
-	
-	if d[1] == :string
-	  (@string_members ||=[]) << d[0]
-	end
+        end
+        
+        if d[1] == :string
+          (@string_members ||=[]) << d[0]
+        end
 
         d[1] = FFI.find_type(d[1]) unless d[1].respond_to?(:"is_struct?") || d[1].is_a?(CFunc::CArray)
         b.push(*d.reverse)
@@ -120,21 +120,21 @@ module FFI
       
       # TODO: thus far field[3] memeber of :new is only way to detect
       if field[3] == :new
-	cls = InlineArray
-	
-	if field[0].type == CFunc::UInt8
-	  cls = CharArray
-	end
-	
-	s = self.class.array_members[k][1]
+        cls = InlineArray
+        
+        if field[0].type == CFunc::UInt8
+          cls = CharArray
+        end
+        
+        s = self.class.array_members[k][1]
 
-	return cls.new(q,s) 
+        return cls.new(q,s)
       end
       
       if sma=self.class.string_members
-	if sma.index(k)
-	  return q.to_s
-	end
+        if sma.index(k)
+          return q.to_s
+        end
       end
       
       return q
@@ -177,11 +177,11 @@ class FFI::Struct::InlineArray
   end
   
   def []= i,v
-    to_ptr[i].value = v	
+    to_ptr[i].value = v
   end
   
   def [] i
-    to_ptr[i].value	
+    to_ptr[i].value
   end
   
   # @return the result of calling `to_s` the wrapped pointer

@@ -53,7 +53,7 @@ module FFICompat
     # @return [Array,NilClass] if the symbol was found returns Array of [self,name], otherwise nil
     def find_symbol name
       if !(s=get_symbol(name)).is_null?
-	return [self,name]
+        return [self,name]
       end
     end
   end

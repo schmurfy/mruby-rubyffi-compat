@@ -39,7 +39,7 @@ module FFI
     def attach where,name
       this = self
       where.singleton_class.define_method(name) do |*args, &b|  
-	this.invoke(*args, &b)
+        this.invoke(*args, &b)
       end
     end  
     
@@ -53,14 +53,14 @@ module FFI
       i=0
       args = pta.map do |a|
       
-	arg=Argument.new
-	arg[:index] = i
-	
-	i=i+1
-	
-	arg[:type] = a  
+        arg=Argument.new
+        arg[:index] = i
+        
+        i=i+1
+        
+        arg[:type] = a
 
-	arg
+        arg
       end
       
       rett = Return.new
@@ -101,23 +101,23 @@ module FFICompat
       invoked = []
       
       arguments.each_with_index do |a,i|
-	a.set o[i]
-	
-	ptr = a.for_invoke
-	
-	if a.value == nil
-	  # do not wrap nil, pass it as is !
-	  invoked << nil
-	else
-	  invoked << ptr
-	end
+        a.set o[i]
+        
+        ptr = a.for_invoke
+        
+        if a.value == nil
+          # do not wrap nil, pass it as is !
+          invoked << nil
+        else
+          invoked << ptr
+        end
       end
 
       # call the function
       r = @lib.call(get_return_type,@name.to_s,*invoked)
       
       arguments.each do |a|
-	a.set nil
+        a.set nil
       end
       
       return(@return_type.type == :void ? nil : @return_type.to_ruby(r))

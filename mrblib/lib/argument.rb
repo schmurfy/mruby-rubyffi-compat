@@ -68,42 +68,42 @@ class Argument < Struct.new(:type,:value,:index)
         value
         
       elsif (cfunc_type = FFI::TYPES[type])
-	if (typedef = FFI::Library.typedefs[type])
-	  o_type = type
-	  self[:type] = typedef
-	  q = for_invoke()
-	  self[:type] = o_type
-	  return q
-	end
-	
+        if (typedef = FFI::Library.typedefs[type])
+          o_type = type
+          self[:type] = typedef
+          q = for_invoke()
+          self[:type] = o_type
+          return q
+        end
+  
         return cfunc_type.new(value)
       
       elsif (callback_type = FFI::Library.callbacks[type])
         FFI::Closure.new(*callback_type, &value)
 
       elsif (struct = type).respond_to?(:is_struct?)
-	if value.is_a?(CFunc::Struct)
-	  return value.addr
-	elsif value.is_a?(CFunc::Pointer)
-	  return value
-	else
-	  return value
-	end
-	
+        if value.is_a?(CFunc::Struct)
+          return value.addr
+        elsif value.is_a?(CFunc::Pointer)
+          return value
+        else
+          return value
+        end
+  
       elsif (instance = type).is_a?(FFI::Struct::ReturnAsInstance)
-	struct = instance.klass
-	
-	if value.is_a?(struct)
-	  return value.addr
-	
-	elsif value.is_a?(CFunc::Pointer)
-	  return value
-	
-	else
-	  # FIXME: should probally raise
-	  return value
-	
-	end
+        struct = instance.klass
+        
+        if value.is_a?(struct)
+          return value.addr
+        
+        elsif value.is_a?(CFunc::Pointer)
+          return value
+        
+        else
+          # FIXME: should probally raise
+          return value
+        
+        end
       
       else
         raise "Unsupported type: #{type}"
