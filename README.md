@@ -3,7 +3,7 @@
 Abstraction layer on top of mruby-cfunc to mimic the standard ffi ruby gem and allow hybrid gems working on both MRI and mruby.
 
 Check the specs if you want to see what is currently supported.
-
+[![Build Status](https://api.travis-ci.org/ppibburr/mruby-rubyffi-compat.png)](https://travis-ci.org/ppibburr/mruby-rubyffi-compat)
 # Synopsis
 ```ruby
 module MyLib
