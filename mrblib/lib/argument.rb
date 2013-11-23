@@ -6,12 +6,24 @@ module Cvalue2RubyValue
   def to_ruby ptr
     if type == :pointer
       return ptr
+
+    # Types of FFI::Struct subclass are aliases for :pointer
     elsif (struct = type).respond_to?(:is_struct?)
       return ptr
-      
+    
+    # Types of FFI::Union subclass are aliases for :pointer    
+    elsif (union = type).respond_to?(:is_union?)
+      return ptr
+            
+    # FFI::Struct#by_ref        
     elsif (instance = type).is_a?(FFI::Struct::ReturnAsInstance)
       struct = instance.klass
       return struct.new(ptr)
+      
+    # FFI::Union#by_ref      
+    elsif (instance = type).is_a?(FFI::Union::ReturnAsInstance)
+      union = instance.klass
+      return union.new(ptr)      
       
     elsif e=FFI::Library.enums[type]
       q = ptr.value
@@ -90,11 +102,35 @@ class Argument < Struct.new(:type,:value,:index)
           return value
         end
   
+      elsif (union = type).respond_to?(:is_union?)
+        if value.is_a?(FFI::Union)
+          return value.pointer
+        elsif value.is_a?(CFunc::Pointer)
+          return value
+        else
+          return value
+        end
+  
       elsif (instance = type).is_a?(FFI::Struct::ReturnAsInstance)
         struct = instance.klass
         
         if value.is_a?(struct)
           return value.addr
+        
+        elsif value.is_a?(CFunc::Pointer)
+          return value
+        
+        else
+          # FIXME: should probally raise
+          return value
+        
+        end
+
+      elsif (instance = type).is_a?(FFI::Union::ReturnAsInstance)
+        union = instance.klass
+        
+        if value.is_a?(union)
+          return value.pointer
         
         elsif value.is_a?(CFunc::Pointer)
           return value

@@ -9,6 +9,7 @@ $rbfiles = [
   'lib/library',
   'lib/pointer',
   'lib/struct',
+  'lib/union',  
   'lib/dynamic_library',
   'ffi'
 ]

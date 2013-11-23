@@ -145,11 +145,6 @@ module FFI
       define(*every(o,2))
     end
   end
-  
-  # TODO: just a struct, kinda works
-  class Union < Struct
-  end
-    
 end
 
 # Represents an array member of an FFI::Struct
