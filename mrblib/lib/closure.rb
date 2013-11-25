@@ -23,8 +23,10 @@ module FFI8
           aa << ptypes[i].to_ruby(FFI::Pointer.refer(q.addr))
         end
         
-        # BUG: b goes nil in a GSourceFunc after the function yielded false (told to stop)
-        next unless b
+        # HACK: b goes nil in a GSourceFunc after the function yielded false (told to stop)
+        # FIXME: when mruby writes a bunch to STDOUT segfaults happen
+        #        This happens elsewhere, maybe bug mruby ...
+        next() unless b
         
         b.call(*aa,&c)
       end
