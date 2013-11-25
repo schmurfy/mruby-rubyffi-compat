@@ -15,15 +15,21 @@ module FFI8
       rtt = Return.new
       rtt[:type] = r
       rt = rtt.get_c_type
-
-      super rt,ptypes_c do |*a,&c|
+  
+      cb = Proc.new do |*a,&c|
         aa = []
+        
         a.each_with_index do |q,i|
           aa << ptypes[i].to_ruby(FFI::Pointer.refer(q.addr))
         end
         
+        # BUG: b goes nil in a GSourceFunc after the function yielded false (told to stop)
+        next unless b
+        
         b.call(*aa,&c)
       end
+
+      super rt,ptypes_c , &cb
     end
   end
 end
