@@ -93,6 +93,7 @@ class FFI::Pointer < CFunc::Pointer
   
   # @return [String]
   def read_string
+    return nil if value.is_null?
     value.to_s
   end
   
