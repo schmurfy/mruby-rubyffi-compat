@@ -1,5 +1,6 @@
 module FFI8
   # Helps turn a block into a callback  
+  CLOSURES = []
   class FFI::Closure < CFunc::Closure
     def initialize args,r,&b
       ptypes = args.map do |a|
@@ -30,6 +31,8 @@ module FFI8
         
         b.call(*aa,&c)
       end
+
+      FFI8::CLOSURES << cb
 
       super rt,ptypes_c , &cb
     end
