@@ -25,6 +25,7 @@ module FFI
     :string   => CFunc::Pointer,
     :pointer  => CFunc::Pointer,
     :void     => CFunc::Void,
+    :float    => CFunc::Float,
     :double   => CFunc::Double,
     :size_t   => CFunc::UInt32,
     :ulong    => (FFI.longsize == 8) ? CFunc::UInt64 : CFunc::UInt32,
