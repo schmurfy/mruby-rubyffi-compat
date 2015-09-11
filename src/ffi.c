@@ -14,7 +14,7 @@ static mrb_value longsize(mrb_state *mrb, mrb_value self)
 void mrb_mruby_rubyffi_compat_gem_init(mrb_state *mrb)
 {
   struct RClass *mod = mrb_define_module(mrb, "FFI");
-  mrb_define_class_method(mrb, mod, "longsize", longsize, ARGS_NONE());
+  mrb_define_class_method(mrb, mod, "longsize", longsize, MRB_ARGS_NONE());
 }
 
 void mrb_mruby_rubyffi_compat_gem_final(mrb_state *mrb)
