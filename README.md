@@ -1,3 +1,10 @@
+# WARNING
+
+I used this library briefly and it works but I am not actively using it, there are multiple reasons:
+- too many layers really slow things down significantly
+- mruby has a well defined C api which is really a pleasure to use (opposite of MRI) and writing a binding directly with it is faster than writing the ffi wrapper for complex cases (and it runs better...).
+
+
 # What is this ?
 
 Abstraction layer on top of mruby-cfunc to mimic the standard ffi ruby gem and allow hybrid gems working on both MRI and mruby.
