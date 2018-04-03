@@ -26,5 +26,6 @@ if defined?(MRuby)
     spec.rbfiles = $mrbfiles
     
     spec.add_dependency('mruby-cfunc', '>= 0.0.0')
+    spec.add_dependency('mruby-struct')
   end
 end
