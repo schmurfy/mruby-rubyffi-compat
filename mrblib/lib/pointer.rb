@@ -9,6 +9,14 @@ class FFI::Pointer < CFunc::Pointer
     end
   end
   
+  def get_type o,t
+    get_pointer(o).read_type(t)
+  end
+  
+  def put_type o,t,v
+    get_pointer(o).write_type(v,t)
+  end  
+  
   # writes an array of +type+ at +offset+ of arr
   # @param type [Symbol] to resolve array member types
   # @param arr [Array] of suitable members to cast to +type+
@@ -68,10 +76,7 @@ class FFI::Pointer < CFunc::Pointer
     end
   end
   
-  # @return [FFI::Pointer] at +offset_
-  def get_pointer offset
-    FFI::Pointer.refer(self[offset].addr)
-  end
+
   
   # @return [String]
   def read_string
@@ -140,6 +145,14 @@ class FFI::Pointer < CFunc::Pointer
         next write_type v,k
       end
       
+      define_method :"get_#{k}" do |o|
+        next get_type o,k
+      end
+
+      define_method :"put_#{k}" do |o,v|
+        next put_type o,k,v
+      end     
+      
       define_method :"put_array_of_#{k}" do |offset, v|
         put_array_of(offset, k, v)
       end
@@ -156,6 +169,10 @@ class FFI::Pointer < CFunc::Pointer
         read_array_of(k,v,&b)
       end
     end
+    
+    def get_array_of_string o,l
+      get_array_of_pointer(0,2).map do |q| q.read_string end
+    end
   end
   
   # reads a boolean
@@ -163,6 +180,15 @@ class FFI::Pointer < CFunc::Pointer
   def read_bool
     return read_int == 1
   end
+  
+  def read_pointer
+    FFI::Pointer.refer(self.addr)
+  end  
+  
+  # @return [FFI::Pointer] at +offset+
+  def get_pointer offset
+    FFI::Pointer.refer(self[offset].addr)
+  end  
   
   # Reads an array of Boolean
   #

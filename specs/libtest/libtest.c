@@ -199,3 +199,53 @@ int test_types_callback(test_types_cb cb)
   double dbl = 3.3;
   return cb(ss,dbl);
 }
+
+// Out parameter tests
+//
+//
+//
+//
+
+typedef struct {
+  int id;
+} FooBar;
+
+int id = 0;
+
+FooBar *foo_bar_new()
+{
+ FooBar *foo = malloc(sizeof(FooBar));
+ id++;
+ foo->id=id;
+ return foo;
+}
+
+void foo_set_a_bar(FooBar** foo)
+{
+ *foo = foo_bar_new();
+}
+
+// keep it
+FooBar *bar[2];
+
+void foo_set_array_of_bar(FooBar*** foo)
+{ 
+  bar[0] = foo_bar_new();
+  bar[1] = foo_bar_new() ; 
+  *foo = bar;
+}
+
+//keep it
+const char* str_a[2];
+
+void foo_set_array_of_string(const char*** out)
+{
+  str_a[0] = "tree";
+  str_a[1] = "fall";
+  *out = str_a;
+}
+
+void foo_set_a_string(const char** out)
+{
+  *out = "hello";
+}
