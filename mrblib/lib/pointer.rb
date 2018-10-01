@@ -8,7 +8,25 @@ class FFI::Pointer < CFunc::Pointer
       CFunc::Pointer(type).refer(ptr.addr)
     end
   end
+
+  # NULL Pointer
+  self::NULL = self.new
   
+  # Compatability method
+  # Useful for comparing two pointers
+  #
+  # @return Integer, pointer address
+  def address
+      lh = Class.new(FFI::Union)
+      lh.layout(:high,:uint32,:low,:uint32)
+    
+      val = lh.new(addr)
+      low  = val[:low]
+      high = val[:high]
+      
+      return((high << 32) | low)
+  end
+        
   # writes an array of +type+ at +offset+ of arr
   # @param type [Symbol] to resolve array member types
   # @param arr [Array] of suitable members to cast to +type+
@@ -75,6 +93,7 @@ class FFI::Pointer < CFunc::Pointer
   
   # @return [String]
   def read_string
+    return nil if value.is_null?
     value.to_s
   end
   

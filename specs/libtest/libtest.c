@@ -199,3 +199,41 @@ int test_types_callback(test_types_cb cb)
   double dbl = 3.3;
   return cb(ss,dbl);
 }
+
+/*
+ union 
+*/
+
+typedef union {
+  int8_t         int_v;
+  SomeStruct* struct_v;
+  uint8_t     buffer_v[4];
+} SomeUnion;
+
+SomeUnion*
+some_union_new()
+{
+  SomeUnion* u = malloc(sizeof(SomeUnion));
+  return u;
+}
+
+void
+some_union_fill_int(SomeUnion* u)
+{
+  u->int_v = 63;
+}
+
+void
+some_union_fill_struct(SomeUnion* u)
+{
+  u->struct_v = some_struct_new("union_member");
+}
+
+void
+some_union_fill_buffer(SomeUnion* u)
+{
+  u->buffer_v[0] = 65;
+  u->buffer_v[1] = 66;
+  u->buffer_v[2] = 67;
+  u->buffer_v[3] = 0;
+}
